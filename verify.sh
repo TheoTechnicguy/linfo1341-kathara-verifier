@@ -94,6 +94,28 @@ for DEVICE in ${DEVICES[@]}; do
   EXIT_CODE=$(($EXIT_CODE + $DIFF_ROUTE_CONFIG_STATUS))
 done
 
+log_info "Verifying traceroute"
+
+TRACEROUTE_H1_H2=$(docker exec $CONTAINER_H2 traceroute -4nq 1 "$PREFIX.0.32.2")
+DIFF_TRACEROUTE_H1_H2=$(diff --ignore-blank-lines --ignore-all-space -y <(echo "$TRACEROUTE_H1_H2") <(echo "$TRACEROUTE_H1_H2"))
+DIFF_TRACEROUTE_H1_H2_STATUS=$?
+
+if [ $DIFF_TRACEROUTE_H1_H2_STATUS -ne 0 ]; then
+  log_error "Traceroute from H1 to H2 is incorrect"
+  echo "$DIFF_TRACEROUTE_H1_H2"
+fi
+
+TRACEROUTE_H2_H1=$(docker exec $CONTAINER_H1 traceroute -4nq 1 "$PREFIX.0.11.2")
+DIFF_TRACEROUTE_H2_H1=$(diff --ignore-blank-lines --ignore-all-space -y <(echo "$TRACEROUTE_H2_H1") <(echo "$TRACEROUTE_H2_H1"))
+DIFF_TRACEROUTE_H2_H1_STATUS=$?
+
+if [ $DIFF_TRACEROUTE_H2_H1_STATUS -ne 0 ]; then
+  log_error "Traceroute from H2 to H1 is incorrect"
+  echo "$DIFF_TRACEROUTE_H2_H1"
+fi
+
+EXIT_CODE=$(($EXIT_CODE + $DIFF_TRACEROUTE_H1_H2_STATUS + $DIFF_TRACEROUTE_H2_H1_STATUS))
+
 if [ $EXIT_CODE -eq 0 ]; then
   log_info "All configurations are correct"
   echo "+---------------------------------------------------------------------------+"
@@ -103,4 +125,5 @@ if [ $EXIT_CODE -eq 0 ]; then
   echo "+---------------------------------------------------------------------------+"
 else
   log_error "Some configurations are incorrect"
+  exit $EXIT_CODE
 fi

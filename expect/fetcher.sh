@@ -39,3 +39,6 @@ for DEVICE in $DEVICES; do
   docker container exec $CONTAINER ip -4 r > $DEVICE.routes.txt
   docker container exec $CONTAINER ip -4 a > $DEVICE.ip.txt
 done
+
+docker container exec $CONTAINER_H1 traceroute -4nq 1 42.0.32.2 > h1.traceroute.txt
+docker container exec $CONTAINER_H2 traceroute -4nq 1 42.0.11.2 > h2.traceroute.txt
