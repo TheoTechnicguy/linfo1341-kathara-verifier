@@ -18,6 +18,11 @@ function log_error() {
   log "ERROR" "$1"
 }
 
+function config_from_url() {
+  URL="https://raw.githubusercontent.com/TheoTechnicguy/linfo1341-kathara-verifier/master/expect/$1.$2.txt"
+  curl -fsSL $URL | sed "s/{PREFIX}/$3/g"
+}
+
 if [ -z "$(which docker)" ]; then
   log_error "Docker is not installed"
   exit 1
@@ -63,7 +68,7 @@ for DEVICE in ${DEVICES[@]}; do
   log_info "Verifying container $CONTAINER"
 
   ACTUAL_IP_CONFIG=$(docker exec $CONTAINER ip -4 a)
-  EXPECTED_IP_CONFIG=$(cat $DEVICE.ip.txt | sed "s/{PREFIX}/$PREFIX/g")
+  EXPECTED_IP_CONFIG=$(config_from_url $DEVICE "ip" $PREFIX)
 
   DIFF_IP_CONFIG=$(diff --ignore-blank-lines --ignore-all-space -y <(echo "$EXPECTED_IP_CONFIG") <(echo "$ACTUAL_IP_CONFIG"))
   DIFF_IP_CONFIG_STATUS=$?
@@ -76,7 +81,7 @@ for DEVICE in ${DEVICES[@]}; do
   EXIT_CODE=$(($EXIT_CODE + $DIFF_IP_CONFIG_STATUS))
 
   ACTUAL_ROUTE_CONFIG=$(docker exec $CONTAINER ip -4 r)
-  EXPECTED_ROUTE_CONFIG=$(cat $DEVICE.route.txt | sed "s/{PREFIX}/$PREFIX/g")
+  EXPECTED_ROUTE_CONFIG=$(config_from_url $DEVICE "routes" $PREFIX)
 
   DIFF_ROUTE_CONFIG=$(diff --ignore-blank-lines --ignore-all-space -y <(echo "$EXPECTED_ROUTE_CONFIG") <(echo "$ACTUAL_ROUTE_CONFIG"))
   DIFF_ROUTE_CONFIG_STATUS=$?
