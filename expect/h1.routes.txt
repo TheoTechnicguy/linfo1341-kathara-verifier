@@ -1,0 +1,2 @@
+default via 42.0.11.1 dev eth0 
+42.0.11.0/24 dev eth0 proto kernel scope link src 42.0.11.2 

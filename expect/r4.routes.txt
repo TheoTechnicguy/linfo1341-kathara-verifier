@@ -1,0 +1,6 @@
+42.0.11.0/24 nhid 16 via 42.0.14.1 dev eth1 proto ospf metric 20 
+42.0.12.0/24 nhid 16 via 42.0.14.1 dev eth1 proto ospf metric 20 
+42.0.14.0/24 dev eth1 proto kernel scope link src 42.0.14.4 
+42.0.23.0/24 nhid 14 via 42.0.34.3 dev eth0 proto ospf metric 20 
+42.0.32.0/24 nhid 14 via 42.0.34.3 dev eth0 proto ospf metric 20 
+42.0.34.0/24 dev eth0 proto kernel scope link src 42.0.34.4 

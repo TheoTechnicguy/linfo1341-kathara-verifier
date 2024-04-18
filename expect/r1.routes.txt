@@ -1,0 +1,8 @@
+42.0.11.0/24 dev eth2 proto kernel scope link src 42.0.11.1 
+42.0.12.0/24 dev eth0 proto kernel scope link src 42.0.12.1 
+42.0.14.0/24 dev eth1 proto kernel scope link src 42.0.14.1 
+42.0.23.0/24 nhid 22 via 42.0.12.2 dev eth0 proto ospf metric 20 
+42.0.32.0/24 nhid 29 proto ospf metric 20 
+	nexthop via 42.0.12.2 dev eth0 weight 1 
+	nexthop via 42.0.14.4 dev eth1 weight 1 
+42.0.34.0/24 nhid 24 via 42.0.14.4 dev eth1 proto ospf metric 20 
